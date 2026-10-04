@@ -1,10 +1,18 @@
 using Josmery_AP1_P1.Components;
+using Josmery_AP1_P1.Context;
+using Josmery_AP1_P1.Services;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+builder.Services.AddDbContext<Contexto>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("SqlConStr")));
+
+builder.Services.AddScoped<Modelo1Service>();
 
 var app = builder.Build();
 
