@@ -1,5 +1,5 @@
 ﻿@page "/Modelo1/Index"
-@inject Modelo1Service modelo1Service
+@inject AutoresService modelo1Service
 
 <PageTitle>Registro de Modelo1</PageTitle>
 
@@ -36,7 +36,7 @@
 </div>
 
 @code {
-    public List<Modelo1> ListaModelo1 { get; set; } = new List<Modelo1>();
+    public List<Autores> ListaModelo1 { get; set; } = new List<Autores>();
     public string Filtro { get; set; } = string.Empty;
     public string ValorFiltro { get; set; } = string.Empty;
 

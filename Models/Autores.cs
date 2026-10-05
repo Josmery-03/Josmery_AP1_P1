@@ -17,6 +17,6 @@ namespace Josmery_AP1_P1.Models
         public DateTime FechaNacimiento { get; set; } = DateTime.Now;
 
         [Range(0.01, double.MaxValue, ErrorMessage = "El sueldo debe ser mayor a 0")]
-        public Decimal Sueldo { get; set; }
+        public decimal Sueldo { get; set; }
     }
 }
