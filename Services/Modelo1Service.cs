@@ -12,11 +12,11 @@ public class Modelo1Service
     {
         _context = context;
     }
-    public async Task<List<Modelo1>> ObtenerTodosAsync()
+    public async Task<List<Autores>> ObtenerTodosAsync()
     {
         return await _context.Modelo1.AsNoTracking().ToListAsync();
     }
-    public async Task<bool> CrearAsync(Modelo1 modelo)
+    public async Task<bool> CrearAsync(Autores modelo)
     {
         _context.Modelo1.Add(modelo);
         return await _context.SaveChangesAsync() > 0;
