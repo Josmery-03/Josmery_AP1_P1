@@ -9,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-builder.Services.AddDbContext<Contexto>(options =>
+builder.Services.AddDbContextFactory<Contexto>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("SqlConStr")));
 
 builder.Services.AddScoped<AutoresService>();

@@ -1,0 +1,126 @@
+﻿@page "/Autores/Index"
+@rendermode InteractiveServer
+
+@using Josmery_AP1_P1.Models
+@using Josmery_AP1_P1.Services
+
+@inject AutoresService autoresService
+
+<PageTitle>Consulta de Autores</PageTitle>
+
+<div class="container mt-4">
+    <div class="card shadow-lg">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Consulta de Autores</h5>
+            <a href="/Autores/Create" class="btn btn-light text-primary bi bi-plus-square-fill"> Crear</a>
+        </div>
+
+        <div class="card-body">
+            
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label class="form-label font-weight-bold">Filtrar por</label>
+                    <select class="form-select" @bind="Criterio">
+                        <option value="" disabled selected>Elija una opción</option>
+                        <option value="Id">Id</option>
+                        <option value="Nombres">Nombres</option>
+                        <option value="Nacionalidad">Nacionalidad</option>
+                    </select>
+                </div>
+                <div class="col-md-8">
+                    <label class="form-label font-weight-bold">Búsqueda</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Buscar..." @bind="ValorFiltro" />
+                        <button class="btn btn-outline-primary bi bi-search" type="button" @onclick="Buscar"></button>
+                    </div>
+                </div>
+            </div>
+
+            @*Tabla*@
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover text-center">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Id</th>
+                            <th>Nombres</th>
+                            <th>Nacionalidad</th>
+                            <th>Fecha Nacimiento</th>
+                            <th>Sueldo</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (ListaAutores == null)
+                        {
+                            <tr><td colspan="6">Cargando...</td></tr>
+                        }
+                        else if (!ListaAutores.Any())
+                        {
+                            <tr><td colspan="6">No hay registros disponibles.</td></tr>
+                        }
+                        else
+                        {
+                            @foreach (var autor in ListaAutores)
+                            {
+                                <tr>
+                                    <td>@autor.IdAutores</td>
+                                    <td>@autor.Nombres</td>
+                                    <td>@autor.Nacionalidad</td>
+                                    <td>@autor.FechaNacimiento.ToString("dd/MM/yyyy")</td>
+                                    <td>@autor.Sueldo.ToString("C2", System.Globalization.CultureInfo.CreateSpecificCulture("es-DO"))</td>
+                                    <td>
+                                        <a href="/Autores/Edit/@autor.IdAutores" class="btn btn-outline-primary btn-sm bi bi-pencil-square"> Editar</a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+       @*Totales*@
+        <div class="card-footer d-flex justify-content-between text-muted">
+            <span><strong>Conteo de autores:</strong> @(ListaAutores?.Count ?? 0)</span>
+            <span><strong>Total Sueldos:</strong> @(ListaAutores?.Sum(a => a.Sueldo).ToString("C2", System.Globalization.CultureInfo.CreateSpecificCulture("es-DO")) ?? "RD$ 0,00")</span>
+        </div>
+    </div>
+</div>
+
+@code {
+    public List<Autores> ListaAutores { get; set; } = new();
+    public string Criterio { get; set; } = "";
+    public string ValorFiltro { get; set; } = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        ListaAutores = await autoresService.Listar(a => true);
+    }
+
+    public async Task Buscar()
+    {
+        if (!string.IsNullOrWhiteSpace(ValorFiltro))
+        {
+            if (Criterio == "Id" && int.TryParse(ValorFiltro, out int id))
+            {
+                ListaAutores = await autoresService.Listar(a => a.IdAutores == id);
+            }
+            else if (Criterio == "Nombres")
+            {
+                ListaAutores = await autoresService.Listar(a => a.Nombres.ToLower().Contains(ValorFiltro.ToLower()));
+            }
+            else if (Criterio == "Nacionalidad")
+            {
+                ListaAutores = await autoresService.Listar(a => a.Nacionalidad.ToLower().Contains(ValorFiltro.ToLower()));
+            }
+            else
+            {
+                ListaAutores = await autoresService.Listar(a => true);
+            }
+        }
+        else
+        {
+            ListaAutores = await autoresService.Listar(a => true);
+        }
+    }
+}

@@ -1,0 +1,63 @@
+﻿@page "/Autores/Create"
+@rendermode InteractiveServer
+@using Josmery_AP1_P1.Models
+@using Josmery_AP1_P1.Services
+@inject NavigationManager navigationManager
+@inject AutoresService autoresService
+
+<PageTitle>Crear Autor</PageTitle>
+
+<EditForm Model="@autor" OnValidSubmit="Guardar">
+    <DataAnnotationsValidator />
+    <div class="container mt-4">
+        <div class="card shadow-lg">
+            <div class="card-header bg-primary text-white">
+                <h5 class="card-title mb-0">Crear Nuevo Autor</h5>
+            </div>
+            <div class="card-body bg-light">
+                <div class="mb-3">
+                    <label class="form-label font-weight-bold">Nombres:</label>
+                    <InputText class="form-control" @bind-Value="@autor.Nombres" placeholder="Ej. Gabriel García Márquez"></InputText>
+                    <ValidationMessage For="@(() => autor.Nombres)" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label font-weight-bold">Nacionalidad:</label>
+                    <InputText class="form-control" @bind-Value="@autor.Nacionalidad" placeholder="Ej. Colombiana"></InputText>
+                    <ValidationMessage For="@(() => autor.Nacionalidad)" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label font-weight-bold">Fecha de Nacimiento:</label>
+                    <InputDate class="form-control" @bind-Value="@autor.FechaNacimiento"></InputDate>
+                    <ValidationMessage For="@(() => autor.FechaNacimiento)" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label font-weight-bold">Sueldo:</label>
+                    <InputNumber class="form-control" @bind-Value="@autor.Sueldo" placeholder="0.00"></InputNumber>
+                    <ValidationMessage For="@(() => autor.Sueldo)" />
+                </div>
+            </div>
+
+            <div class="card-footer d-flex justify-content-center gap-2">
+                <a href="/Autores/Index" class="btn btn-secondary bi bi-arrow-left"> Volver</a>
+                <button type="submit" class="btn btn-primary bi bi-floppy"> Guardar</button>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    public Autores autor { get; set; } = new();
+
+    public async Task Guardar()
+    {
+        var guardado = await autoresService.Guardar(autor);
+        if (guardado)
+        {
+            navigationManager.NavigateTo("/Autores/Index");
+        }
+    }
+}
+
